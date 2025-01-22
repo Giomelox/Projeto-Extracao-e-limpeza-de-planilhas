@@ -134,7 +134,6 @@ def processar_arquivos():
             except Exception as e:
                 exibir_mensagem(f"Erro ao processar o arquivo {nome_arquivo}: {e}")
 
-#=========================================================================================================================================================================================
         
     # Verificar se o nome do arquivo é 'Mix de vendas.xlsx'
         elif nome_arquivo == 'Mix de vendas.xlsx':
@@ -182,8 +181,6 @@ def processar_arquivos():
             except Exception as e:
                 exibir_mensagem(f"Erro ao processar o arquivo {nome_arquivo}: {e}")
 
-#=========================================================================================================================================================================================
-
         elif nome_arquivo == 'Finanças.xlsx':
             try:
                 # Carregar o arquivo Excel para listar as planilhas
@@ -225,8 +222,6 @@ def processar_arquivos():
             except Exception as e:
                 exibir_mensagem(f"Erro ao processar o arquivo {nome_arquivo}: {e}")
 
-#=========================================================================================================================================================================================
-
         elif nome_arquivo == 'Couvert.xlsx':
             try:
                 # Carregar o arquivo Excel para listar as planilhas
@@ -267,8 +262,6 @@ def processar_arquivos():
             except Exception as e:
                 exibir_mensagem(f"Erro ao processar o arquivo {nome_arquivo}: {e}")
 
-#=========================================================================================================================================================================================
-
         elif nome_arquivo == 'Vinhos.xlsx':
             try:
                 # Carregar o arquivo Excel para listar as planilhas
@@ -304,8 +297,6 @@ def processar_arquivos():
                 exibir_mensagem(f"Erro ao processar o arquivo {nome_arquivo}: {e}")
 
     return dataframes
-
-#=========================================================================================================================================================================================
 
 def juntar_planilhas():
     # Juntar as planilhas em uma só
@@ -372,8 +363,6 @@ def juntar_planilhas():
                                         top = Side(style = 'thin', color = '000000'),
                                         bottom = Side(style = 'thin', color = '000000'))
 
-    #=========================================================================================================================================================================================
-
     sheet_MVF = workbook['Mix de vendas e funcionários']
 
     # Adiciona a lista de valores na primeira linha da planilha
@@ -419,7 +408,6 @@ def juntar_planilhas():
                                         top = Side(style = 'thin', color = '000000'),
                                         bottom = Side(style = 'thin', color = '000000'))
 
-    #=========================================================================================================================================================================================
     sheet_FF = workbook['Finanças dos funcionários']
 
     # Adiciona a lista de valores na primeira linha da planilha
@@ -480,7 +468,6 @@ def juntar_planilhas():
                                         top = Side(style = 'thin', color = '000000'),
                                         bottom = Side(style = 'thin', color = '000000'))
 
-    #=========================================================================================================================================================================================
     # Carregar a planilha e aplicar as formatações
     sheet_couvert = workbook['Couvert Artistico']
 
@@ -573,9 +560,6 @@ def juntar_planilhas():
                                 top=Side(style='thin', color='000000'),
                                 bottom=Side(style='thin', color='000000'))
 
-                
-    #=========================================================================================================================================================================================
-
     sheet_vinhos = workbook['Controle de Vinhos']
 
     # Adiciona a lista de valores na primeira linha da planilha
@@ -628,7 +612,6 @@ def juntar_planilhas():
 
     exibir_mensagem(f"Processado: {arquivo_destino}")
 
-#=========================================================================================================================================================================================
 import subprocess
 import os
 import time
