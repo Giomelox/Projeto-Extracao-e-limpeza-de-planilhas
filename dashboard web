@@ -12,7 +12,6 @@ planilhas = {
     'Finanças dos funcionários': pd.read_excel('Relatório Geral.xlsx', sheet_name='Finanças dos funcionários'),
     'Couvert Artistico': pd.read_excel('Relatório Geral.xlsx', sheet_name='Couvert Artistico').iloc[:-1],
     'Controle de Vinhos': pd.read_excel('Relatório Geral.xlsx', sheet_name='Controle de Vinhos').iloc[1:],
-    # Adicione outras planilhas conforme necessário
 }
 
 # Função para agregar dados para o dashboard de 'Mix de vendas e funcionários'
@@ -36,7 +35,7 @@ app.layout = html.Div(children=[
         id='dropdown_filtros',
         placeholder="Selecione uma opção",
         multi=False,  # Se quiser múltipla seleção, mude para True
-        style={'display': 'none'}  # Inicialmente invisível
+        style={'display': 'none'}
     ),
 
     dcc.Graph(id='dashboard_graph_1'),  # Primeiro gráfico
@@ -53,19 +52,18 @@ def update_dropdown_options(selected_dashboard):
     if selected_dashboard == 'Mix de vendas e funcionários':
         df = planilhas['Mix de vendas e funcionários']
         options = [{'label': funcionario, 'value': funcionario} for funcionario in df['Nome do funcionário'].unique()]
-        return options, {'display': 'block'}  # Torna o dropdown visível
+        return options, {'display': 'block'} 
 
     elif selected_dashboard == 'Finanças dos funcionários':
         df = planilhas['Finanças dos funcionários']
         options = [{'label': funcionario, 'value': funcionario} for funcionario in df['Nome do Funcionário'].unique()]
-        return options, {'display': 'block'}  # Torna o dropdown visível
+        return options, {'display': 'block'} 
 
     elif selected_dashboard == 'Couvert Artistico':
         df = planilhas['Couvert Artistico']
         
-        # Aqui preenchemos o dropdown com base na coluna "Quantidade de Vendas"
         options = [{'label': str(quantidade), 'value': quantidade} for quantidade in df['Quantidade de Vendas'].unique()]
-        return options, {'display': 'block'}  # Torna o dropdown visível
+        return options, {'display': 'block'} 
 
     elif selected_dashboard == 'Controle de Vinhos':
         df = planilhas['Controle de Vinhos']
