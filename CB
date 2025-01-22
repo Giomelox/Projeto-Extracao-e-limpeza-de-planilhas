@@ -4,7 +4,6 @@ import pandas as pd
 from openpyxl.styles import PatternFill, Font, Alignment
 from openpyxl.styles.borders import Border, Side
 
-# Variável para armazenar os arquivos selecionados
 arquivos_selecionados = []
 
 def formatar_linha(worksheet, cor_fundo, cor_fonte, cor_borda):
@@ -79,10 +78,8 @@ def selecionar_arquivos():
         filetypes=[("Planilhas Excel", "*.xlsx")]
     )
     
-    # Armazenar os arquivos selecionados na variável
     arquivos_selecionados = list(arquivos)
 
-    # Mostrar os arquivos na GUI
     if arquivos_selecionados:
         lista_arquivos.delete(0, tk.END)  # Limpar a lista antes de adicionar novos itens
         for arquivo in arquivos_selecionados:
@@ -92,36 +89,27 @@ def processar_arquivos():
     # Criar um dicionário para armazenar os DataFrames de cada arquivo
     dataframes = {}
     
-    # Processar cada arquivo selecionado
     for arquivo in arquivos_selecionados:
-        # Extrair o nome do arquivo (sem o caminho)
         nome_arquivo = arquivo.split("/")[-1]
         
-        # Verificar se o nome do arquivo é 'Operações diárias do mês.xlsx'
         if nome_arquivo == 'Operações diárias do mês.xlsx':
             try:
-                # Carregar o arquivo Excel para listar as planilhas
                 excel_file = pd.ExcelFile(arquivo)
                 planilhas = excel_file.sheet_names  # Lista as planilhas disponíveis
                 
-                # Pedir ao usuário para escolher a planilha
                 planilha_escolhida = simpledialog.askstring(
                     "Escolha da Planilha",
                     f"As planilhas disponíveis para o arquivo {nome_arquivo} são:\n{planilhas}\n\nPor favor, insira o nome da planilha que deseja processar:"
                 )
                 
                 if planilha_escolhida and planilha_escolhida in planilhas:
-                    # Carregar o DataFrame da planilha escolhida
                     df_OP = pd.read_excel(arquivo, sheet_name = 'Reports')
                     
-                    # Selecionar as linhas e colunas desejadas
                     valores = df_OP.iloc[88:95, [0, 1, 3]]
                     valores.columns = ['Centros', 'Vendas', 'Contas']
                     
-                    # Armazenar o DataFrame no dicionário usando o nome do arquivo como chave
                     dataframes[nome_arquivo] = valores
                     
-                    # Salvar o DataFrame em um novo arquivo Excel
                     valores.to_excel(f'{nome_arquivo}', 
                                      sheet_name = 'Operações diárias do mês', 
                                      index = False, 
@@ -135,14 +123,11 @@ def processar_arquivos():
                 exibir_mensagem(f"Erro ao processar o arquivo {nome_arquivo}: {e}")
 
         
-    # Verificar se o nome do arquivo é 'Mix de vendas.xlsx'
         elif nome_arquivo == 'Mix de vendas.xlsx':
             try:
-                # Carregar o arquivo Excel para listar as planilhas
                 excel_file = pd.ExcelFile(arquivo)
                 planilhas = excel_file.sheet_names  # Lista as planilhas disponíveis
                 
-                # Pedir ao usuário para escolher a planilha
                 planilha_escolhida = simpledialog.askstring(
                     "Escolha da Planilha",
                     f"As planilhas disponíveis para o arquivo {nome_arquivo} são:\n{planilhas}\n\nPor favor, insira o nome da planilha que deseja processar:"
@@ -150,10 +135,8 @@ def processar_arquivos():
                 
                 if planilha_escolhida and planilha_escolhida in planilhas:
 
-                    # Carregar o DataFrame da planilha escolhida
                     df_funcionarios = pd.read_excel(arquivo, sheet_name = 'Mix de Vendas de Funcionários')
                     
-                    # Selecionar as colunas e linhas relevantes
                     funcionarios = df_funcionarios.iloc[6:, [3, 6, 7, 8]]
                     funcionarios.columns = ['Nº de vendas', 'Nome do funcionário', 'Nome do grupo de família', 'Nome do grupo principal']
 
@@ -166,10 +149,8 @@ def processar_arquivos():
                     # Agrupar e somar as vendas por funcionário e grupos
                     resultado = funcionarios_grouped.groupby(['Nome do funcionário', 'Nome do grupo de família', 'Nome do grupo principal']).sum().reset_index()
                     
-                    # Armazenar o DataFrame no dicionário
                     dataframes[nome_arquivo] = resultado
                     
-                    # Salvar o DataFrame em um novo arquivo Excel
                     resultado.to_excel(f'{nome_arquivo}', 
                                        sheet_name = 'Resumo de Vendas', 
                                        index = False)
@@ -183,32 +164,26 @@ def processar_arquivos():
 
         elif nome_arquivo == 'Finanças.xlsx':
             try:
-                # Carregar o arquivo Excel para listar as planilhas
                 excel_file = pd.ExcelFile(arquivo)
                 planilhas = excel_file.sheet_names  # Lista as planilhas disponíveis
                 
-                # Pedir ao usuário para escolher a planilha
                 planilha_escolhida = simpledialog.askstring(
                     "Escolha da Planilha",
                     f"As planilhas disponíveis para o arquivo {nome_arquivo} são:\n{planilhas}\n\nPor favor, insira o nome da planilha que deseja processar:"
                 )
                 
                 if planilha_escolhida and planilha_escolhida in planilhas:
-                    # Carregar o DataFrame da planilha escolhida
                     df_finanças = pd.read_excel(arquivo, sheet_name = 'Reports')
 
                     finanças = df_finanças.iloc[8:, 0:4]
 
-                    # Renomeando as colunas para facilitar o acesso
                     finanças.columns = ['Nome do Funcionário', 'Valor de Vendas Líquidas', 'Valor das Taxas de Serviço', 'Receita Total']
 
-                    # Realizando o cálculo da 'Taxa de Aproveitamento' a partir da segunda linha
                     finanças['Taxa de Aproveitamento'] = ((finanças['Valor de Vendas Líquidas'].iloc[1:] * 100) / finanças['Receita Total'].iloc[1:]) / 100
 
                     # Adicionando o cabeçalho na nova coluna
                     finanças.iloc[0, finanças.columns.get_loc('Taxa de Aproveitamento')] = 'Taxa de Aproveitamento'
 
-                    # Armazenar o DataFrame no dicionário
                     dataframes[nome_arquivo] = finanças
 
                     finanças.to_excel(f'{nome_arquivo}', 
@@ -224,22 +199,18 @@ def processar_arquivos():
 
         elif nome_arquivo == 'Couvert.xlsx':
             try:
-                # Carregar o arquivo Excel para listar as planilhas
                 excel_file = pd.ExcelFile(arquivo)
                 planilhas = excel_file.sheet_names  # Lista as planilhas disponíveis
-                
-                # Pedir ao usuário para escolher a planilha
+
                 planilha_escolhida = simpledialog.askstring(
                     "Escolha da Planilha",
                     f"As planilhas disponíveis para o arquivo {nome_arquivo} são:\n{planilhas}\n\nPor favor, insira o nome da planilha que deseja processar:"
                 )
                 
                 if planilha_escolhida and planilha_escolhida in planilhas:
-                    # Carregar o DataFrame da planilha escolhida
                     df_valorcouvert = pd.read_excel(arquivo, sheet_name='Base Anulações')
                     df_couvert = pd.read_excel(arquivo, sheet_name='Consolidado')
 
-                    # Selecionar os dados e converter para objeto
                     valor_couvert = df_valorcouvert.iloc[9, 2]
                     couvert = df_couvert.iloc[3:, 1:10]
 
@@ -248,7 +219,6 @@ def processar_arquivos():
                     couvert['Porcentagem Anulados Vasto Program 2'] = '=(H48/C48)'
                     couvert['Porcentagem Anulados Vasto Program 3'] = '=(I48/D48)'
 
-                    # Armazenar o DataFrame no dicionário
                     dataframes[nome_arquivo] = couvert
 
                     couvert.to_excel(f'{nome_arquivo}', 
@@ -264,11 +234,9 @@ def processar_arquivos():
 
         elif nome_arquivo == 'Vinhos.xlsx':
             try:
-                # Carregar o arquivo Excel para listar as planilhas
                 excel_file = pd.ExcelFile(arquivo)
                 planilhas = excel_file.sheet_names  # Lista as planilhas disponíveis
                 
-                # Pedir ao usuário para escolher a planilha
                 planilha_escolhida = simpledialog.askstring(
                     "Escolha da Planilha",
                     f"As planilhas disponíveis para o arquivo {nome_arquivo} são:\n{planilhas}\n\nPor favor, insira o nome da planilha que deseja processar:"
@@ -282,7 +250,6 @@ def processar_arquivos():
 
                     vinhos.columns = ['Nome', 'Total de Vendas Brutas', 'Preço Médio']
 
-                    # Armazenar o DataFrame no dicionário
                     dataframes[nome_arquivo] = vinhos
 
                     vinhos.to_excel(f'{nome_arquivo}', 
@@ -432,21 +399,22 @@ def juntar_planilhas():
     for i, largura in enumerate(largura_colunas, start = 1):
         sheet_FF.column_dimensions[chr(64 + i)].width = largura
 
-    # Converte a coluna J para Reais
+    # Converte a coluna B para Reais
     for row in range(1, sheet_FF.max_row + 1): 
         cellFF = sheet_FF[f'B{row}']  
         cellFF.number_format = 'R$ #,##0.00' 
 
-    # Converte a coluna J para Reais
+    # Converte a coluna C para Reais
     for row in range(1, sheet_FF.max_row + 1): 
         cellFF = sheet_FF[f'C{row}']  
         cellFF.number_format = 'R$ #,##0.00' 
 
-    # Converte a coluna J para Reais
+    # Converte a coluna D para Reais
     for row in range(1, sheet_FF.max_row + 1): 
         cellFF = sheet_FF[f'D{row}']  
         cellFF.number_format = 'R$ #,##0.00' 
 
+    # Converte a coluna F para Porcentagem
     for row in range(1, sheet_FF.max_row + 1):
         cell_porcentoFF = sheet_FF[f'E{row}']
         cell_porcentoFF.number_format = '0.00%'
@@ -534,7 +502,7 @@ def juntar_planilhas():
             try:
                 cell_B.value = int(cell_B.value.replace(",", "").strip())  # Converte para número
             except ValueError:
-                pass  # Ignora valores que não podem ser convertidos
+                pass 
 
     # Converte os valores da coluna B para números
     for row in range(2, sheet_couvert.max_row + 1):
